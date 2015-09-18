@@ -7,9 +7,10 @@ var T = new Twit({
     access_token_secret: ''
 })
 
-var stream = T.stream('statuses/filter', { track: 'mango' })
+var stream = T.stream('statuses/filter', { track: 'swarmapp', language: 'en' })
 
 stream.on('tweet', function (tweet) {
-  console.log(tweet)
+  var swarmappUrl = tweet.entities.urls[0].display_url;
+  var FSid = swarmappUrl.split("/")[2];
+  console.log(FSid);
 })
-// Console will print the message
