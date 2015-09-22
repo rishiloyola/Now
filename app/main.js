@@ -37,11 +37,16 @@ stream.on('tweet', function (tweet) {
           //Storing data using appbase api
             client.index({
               index: 'Check In',
-              type: cityDetails,
+              type: 'city',
               id: parsedbody.response.checkin.id,
-              body: parsedbody.response.checkin
+              body: {
+                shout: parsedbody.response.checkin.shout,
+                city: cityDetails,
+                venue: parsedbody.response.checkin.venue.name,
+                name_suggest: cityDetails
+              }
             }).then(function(response) {
-              console.log(parsedbody.response);
+              console.log(cityDetails);
               console.log(response);
             }, function(error) {
               console.log(error);
