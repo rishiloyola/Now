@@ -1,0 +1,10 @@
+#searchdata {
+	display: block;
+  margin: 0;
+  width: 25%;
+  font-family: sans-serif;
+  font-size: 18px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+}
