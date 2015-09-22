@@ -1,0 +1,21 @@
+<html>
+<head>
+
+  <link rel="stylesheet" type="text/css" href="index.css">
+
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+<script src="bower_components/appbase-js/browser/appbase.js"></script>
+<script src="bower_components/elasticsearch/elasticsearch.angular.js"></script>
+<script src="index.js"></script>
+
+<body  ng-app="myApp">
+
+    <div ng-controller="controller">
+        <input type="text" id="searchdata" placeholder="Search" ng-model="searchtext" ng-change="checktext()" ng-keydown="checktext()"/>
+    </div>
+
+</body>
+
+</html>
