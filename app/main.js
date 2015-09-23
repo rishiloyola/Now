@@ -43,7 +43,7 @@ stream.on('tweet', function (tweet) {
                 shout: parsedbody.response.checkin.shout,
                 city: cityDetails,
                 venue: parsedbody.response.checkin.venue.name,
-                name_suggest: cityDetails
+                query_suggest: cityDetails
               }
             }).then(function(response) {
               console.log(cityDetails);
