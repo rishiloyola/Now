@@ -9,13 +9,21 @@
 <body  ng-app="myApp">
 
     <div ng-controller="controller">
+    <table>
+        <tr>
+        <td width="20%">
         <input type="text" id="searchdata" placeholder="Search" ng-model="searchtext" ng-keyup="checktext()"/>
         <table ng-model="suggestions">
             <tr ng-repeat="x in suggestions">
               <td id="suggestdata" ng-show="row">{{ x.text }}</td>
             </tr>
         </table>
-
+    </td>
+    <td>
+        <button id="button" ng-click="getData()">Search</button>
+    </td>
+</tr>
+    </table>
     </div>
 
 </body>
