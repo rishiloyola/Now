@@ -1,30 +1,45 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="index.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+  <script src="bower_components/appbase-js/browser/appbase.js"></script>
+  <script src="bower_components/elasticsearch/elasticsearch.angular.js"></script>
+  <script src="index.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather,visualization,panoramio"></script>
+  <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
 </head>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
-<script src="bower_components/appbase-js/browser/appbase.js"></script>
-<script src="bower_components/elasticsearch/elasticsearch.angular.js"></script>
-<script src="index.js"></script>
-<body  ng-app="myApp">
+<body  ng-app="myApp" ng-controller="controller" ng-init="init()">
 
-    <div ng-controller="controller">
     <table>
         <tr>
-        <td width="20%">
-        <input type="text" id="searchdata" placeholder="Search" ng-model="searchtext" ng-keyup="checktext()"/>
-        <table ng-model="suggestions">
-            <tr ng-repeat="x in suggestions">
-              <td id="suggestdata" ng-show="row">{{ x.text }}</td>
-            </tr>
-        </table>
-    </td>
-    <td>
-        <button id="button" ng-click="getData()">Search</button>
-    </td>
-</tr>
+           <td width="20%">
+                 <input type="text" id="searchdata" placeholder="Search" ng-model="searchtext" ng-keyup="checktext()"/>
+                 <table ng-model="suggestions">
+                    <tr ng-repeat="x in suggestions" ng-click="changetext(x.text)">
+                        <td id="suggestdata" ng-show="row">{{ x.text }}</td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <button id="button" ng-click="getData()">Search</button>
+            </td>
+            <td>
+              <form>
+              <div ng-repeat="sub in subjects">
+                {{sub}}
+                  <input type="checkbox" ng-model="selectedvalue" ng-change="getcategory(sub)">
+               </div>
+               </form>  
+            </td>
+        </tr>
+        <tr ng-model="center">  
+          <map center="{{center[0]}},{{center[1]}}" zoom="4">
+            <marker ng-repeat="beach in beaches" id="mark" title="{{beach[0]}}" position="{{beach[1]}}, {{beach[2]}}" z-index="{{beach[3]}}" on-click="showInfoWindow(event,beach)">
+            </marker>
+          </map>
+        </tr>
     </table>
-    </div>
+    
 
 </body>
 </html>

@@ -28,13 +28,14 @@ stream.on('tweet', function (tweet) {
     var swarmappUrl = tweet.entities.urls[0].display_url;
     var FSid = swarmappUrl.split("/")[2];
     var FSurl = "https://api.foursquare.com/v2/checkins/resolve?shortId="+FSid+"&oauth_token="+jsonContent.foursquare.oauth_token+"&v=20150919";
-  //Getting data from foursquare
+    //Getting data from foursquare
     request(FSurl, function(error, response, body) {
        var parsedbody = JSON.parse(body);
        if(parsedbody.meta.code==200){
           var cityDetails = String(parsedbody.response.checkin.venue.location.city);
-          if(!(cityDetails === "undefined")){
-          //Storing data using appbase api
+          if(cityDetails!="undefined" && String(parsedbody.response.checkin.venue.categories[0].shortName)!="undefined" && String(parsedbody.response.checkin.venue.name)!="undefined" && String(parsedbody.response.checkin.shout)!="undefined"){
+            //Storing data using appbase api
+            console.log(cityDetails);
             client.index({
               index: 'Check In',
               type: 'city',
@@ -42,12 +43,15 @@ stream.on('tweet', function (tweet) {
               body: {
                 shout: parsedbody.response.checkin.shout,
                 city: cityDetails,
+                category: parsedbody.response.checkin.venue.categories[0].shortName,
+                latitude: parsedbody.response.checkin.venue.location.lat,
+                longitude: parsedbody.response.checkin.venue.location.lng,
                 venue: parsedbody.response.checkin.venue.name,
                 query_suggest: cityDetails
               }
             }).then(function(response) {
-              console.log(cityDetails);
               console.log(response);
+              //console.log(parsedbody.response.checkin.venue);
             }, function(error) {
               console.log(error);
             });
