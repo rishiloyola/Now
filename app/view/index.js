@@ -11,6 +11,7 @@ myApp.controller('controller', function ($scope, client, esFactory) {
         $scope.$on('mapInitialized', function(event, map) {
             $scope.center = [0,0];
             $scope.objMapa = map;
+            $scope.$apply();
         });
     }
     $scope.selectedvalue = true;
@@ -92,6 +93,7 @@ myApp.controller('controller', function ($scope, client, esFactory) {
             }
         }).on('data', function(res) {
             response = res;
+            $scope.$apply();
             console.log("res"+JSON.stringify(res));
             var categorylist = [];
             var beaches = [];
@@ -111,6 +113,8 @@ myApp.controller('controller', function ($scope, client, esFactory) {
             typesOfcat = categorylist;
             $scope.beaches = beaches;
             $scope.subjects = Object.keys(categorylist);
+            $scope.$digest() 
+            $scope.$apply();
         }).on('error', function(err) {
             console.log("caught a stream error", err)
         })
