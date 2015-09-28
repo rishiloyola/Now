@@ -125,7 +125,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
             body: {
                query : {
                   match: {
-                      city : "San Francisco"
+                      city : $scope.searchtext
                   }
                 }
             }
