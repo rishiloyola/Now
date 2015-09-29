@@ -3,25 +3,28 @@ var myApp = angular.module('myApp', ['elasticsearch','ngMap']);
 
 myApp.service('client', function (esFactory) {
     return esFactory({
-        host: 'https://eCRxlKxww:a9a4d5da-d42e-4f17-8256-4a97fe89d9f9@scalr.api.appbase.io',
+        host: 'https://VUFFYiAho:dc58e7a2-1638-46f7-bf8b-2e657b22b410@scalr.api.appbase.io',
    });
 });
 
 
 myApp.controller('controller', function ($scope, client, esFactory, $interval) {
   
-    var streamingClient = new appbase({
+    var streamingClient = new Appbase({
       url: 'https://scalr.api.appbase.io',
       appname: 'Check In',
-      username: 'eCRxlKxww',
-      password: 'a9a4d5da-d42e-4f17-8256-4a97fe89d9f9'
+      username: 'VUFFYiAho',
+      password: 'dc58e7a2-1638-46f7-bf8b-2e657b22b410'
     });
     
     
-    var typesOfcat = [];            //global variable to store categories of one city
-    var response;
-    var geocoder = new google.maps.Geocoder();
-    var infowindow = new google.maps.InfoWindow();
+    var typesOfcat = [],            //global variable to store categories of one city
+        response,                   //global variable to store response from appbase
+        geocoder = new google.maps.Geocoder(),
+        infowindow = new google.maps.InfoWindow(),
+        identifyStreaming,          //parameter to identify streaming
+        checkin = [],               //global variable to store checkins of one city
+        categorylist = [];          
 
     $scope.selectedvalue = true;
     $scope.detailbox=false;
@@ -47,7 +50,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
       
       if(visible){
          infowindow.setContent('<h3>' + data[0] + '</h3>');
-         var center = new google.maps.LatLng(data[1]+0.06,data[2]);
+         var center = new google.maps.LatLng(data[1],data[2]);
          infowindow.setPosition(center);
          infowindow.open($scope.objMapa);
       }else{
@@ -91,7 +94,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
     
     $scope.showcategory = function(data){
       
-        var beaches = [];
+        var places = [];
         
         if(typesOfcat[data]==true) typesOfcat[data]=false;
         else typesOfcat[data]=true;
@@ -105,35 +108,36 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
                 arr[1] = response.hits.hits[i]._source.latitude;
                 arr[2] = response.hits.hits[i]._source.longitude;
                 arr[3] = 1;
-                beaches.push(arr);
+                places.push(arr);
             }
             
         }
         
-        $scope.beaches = beaches;
+        $scope.beaches = places;
     }
     
     //streaming data from appbase
     $scope.getData = function(){
-       
+        identifyStreaming = false;
         try{
-          console.log($scope.searchtext);
           streamingClient.streamSearch({
             type: 'city',
-            stream: true,
             size: 200,
             body: {
                query : {
-                  match: {
+                  term: {
                       city : $scope.searchtext
                   }
                 }
-            }
+             }
            }).on('data', function(res) {
+             if(!identifyStreaming) {checkin = []; categorylist = [];}
+             else console.log('streaming is now on !');
              $scope.row = false;    //to hide suggestions
              $scope.$apply();
              processStreams(res);  //to fetch the data and to mark it on map
              $scope.selectedvalue = true;
+             console.log('hello');
            }).on('error', function(err) {
              console.log("caught a stream error", err);
            });
@@ -145,9 +149,8 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
     };
     
      function processStreams (res){
-       
-         var categorylist = [];
-         var beaches = [];
+       identifyStreaming = true;
+       if($scope.searchtext!=null && $scope.searchtext.replace(/\s/g,'').length){
          response = res;
          console.log($scope.searchtext);
          console.log("res"+JSON.stringify(res.hits));
@@ -166,33 +169,35 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
                     arr[2] = response.hits.hits[i]._source.longitude;
                     arr[3] = 1;
                     arr[4] = response.hits.hits[i]._source.category;
-                    beaches.push(arr);
+                    checkin.push(arr);
                   }
                 }
               }
             }
           }
-          
+          //GeoCoding to search the city
           geocoder.geocode( { "address": $scope.searchtext }, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
                var location = results[0].geometry.location,
                lat  = location.lat(),
                lng  = location.lng();
                $scope.center = [lat,lng];
-               $scope.zoomlevel = 7;
+               $scope.zoomlevel = 8;
                $scope.$apply();
             }
           });
           
           typesOfcat = categorylist;
-          $scope.beaches = beaches;
-          console.log('beach'+beaches);
+          $scope.beaches = checkin;
+          console.log('beach'+checkin);
          // $scope.subjects = Object.keys(categorylist);
           $scope.subjects = createJson(categorylist,Object.keys(categorylist));
           $scope.$digest(); 
           $scope.$apply();
+       }
     }
     
+    //Json data to render dynamic checkbox
     function createJson(key,array){
       var json = [];
       for(var i=0;i<array.length;i++){
@@ -204,5 +209,5 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
         }
         return json;
     }
-    
+  
 });
