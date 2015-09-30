@@ -1,0 +1,12 @@
+{
+  "name": "CheckedIn",
+  "dependencies": {
+    "appbase-js": "latest",
+    "elasticsearch": "~6.0.0",
+    "underscore": "~1.8.3",
+    "react-bootstrap": "~0.25.1"
+  },
+  "resolutions": {
+    "react-bootstrap": "~0.24.5"
+  }
+}
