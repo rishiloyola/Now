@@ -14,9 +14,10 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
 <body  ng-app="myApp" ng-controller="controller" ng-init="init()">
-           
-           <div class="col-sm-2">
-              <input type="text" id="searchdata" placeholder="Search" ng-model="searchtext" ng-keydown="searchquerry()"/>
+        <div class="container-fluid">
+           <div class="col-sm-3">
+             <div class="row" style="height:200px;"></div>
+              <input type="text" class="form-control input-lg" placeholder="Enter City Name" ng-model="searchtext" ng-keydown="searchquerry()"/>
               <table ng-model="suggestions">
                 <tr ng-repeat="x in suggestions" ng-click="changesearchtext(x.text)">
                   <td id="suggestdata" ng-show="row">{{ x.text }}</td>
@@ -25,10 +26,12 @@
            </div>
             
             <div class="col-sm-2">
-              <button id="button" ng-click="getData()" class="btn btn-inverse btn-large">Search</button>
+              <div class="row" style="height:200px;"></div>
+              <button class="btn btn-lg btn-success" ng-click="getData()"><span class="glyphicon glyphicon-map-marker"></span> Plot It !</button>
             </div>
             
             <div class="col-sm-2">
+              <div class="row" style="height:200px;"></div>
               <div ng-repeat="sub in subjects">
                 <input type="checkbox" ng-model="sub.value" ng-change="showcategory(sub.name)">
                 {{sub.name}}
@@ -41,6 +44,9 @@
               </marker>
              </map>
             </div>
+            
+          
+        </div>
     
 </body>
 </html>
