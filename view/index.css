@@ -1,20 +1,9 @@
 body {
   background: url(wood-background-1.jpg);
 }
-#searchdata {
-  display: block;
-  margin: 0;
-  width: 100%;
-  font-family: sans-serif;
-  font-size: 18px;
-  appearance: none;
-  box-shadow: none;
-  border-radius: none;
-}
 #suggestdata {
   display: block;
   margin: 0;
-  width: 25%;
   font-family: sans-serif;
   font-size: 18px;
   appearance: none;
@@ -35,9 +24,40 @@ div[ng-controller='MarkerRemoveCtrl'] #panel {
   border: 1px solid #999;
 }
 map{
-  width: 600px;
+  width: 520px;
   height: 600px;
 }
 #suggestdata:hover{
   background-color: blue;
+}
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input .glyphicon-search{
+    font-size: 23px;
 }
