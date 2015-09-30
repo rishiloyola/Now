@@ -18,13 +18,12 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
     });
     
     
-    var typesOfcat = [],            //global variable to store categories of one city
-        response,                   //global variable to store response from appbase
+    var response,                   //global variable to store response from appbase
         geocoder = new google.maps.Geocoder(),
         infowindow = new google.maps.InfoWindow(),
         identifyStreaming,          //parameter to identify streaming
         checkin = [],               //global variable to store checkins of one city
-        categorylist = [];          
+        categorylist = [];           //global variable to store categories of one city
 
     $scope.selectedvalue = true;
     $scope.detailbox=false;
@@ -96,18 +95,19 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
       
         var places = [];
         
-        if(typesOfcat[data]==true) typesOfcat[data]=false;
-        else typesOfcat[data]=true;
+        if(categorylist[data]==true) categorylist[data]=false;
+        else categorylist[data]=true;
         
         console.log(data);
-        for(var i=0;i<response.hits.hits.length;i++){
+        for(var i=0;i<checkin.length;i++){
           
-            if(typesOfcat[response.hits.hits[i]._source.category] == true){
+            if(categorylist[checkin[i][4]] == true){
                 var arr = [];
-                arr[0] = response.hits.hits[i]._source.shout;
-                arr[1] = response.hits.hits[i]._source.latitude;
-                arr[2] = response.hits.hits[i]._source.longitude;
+                arr[0] = checkin[i][0];
+                arr[1] = checkin[i][1];
+                arr[2] = checkin[i][2];
                 arr[3] = 1;
+                arr[4] = checkin[i][4];
                 places.push(arr);
             }
             
@@ -119,7 +119,6 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
     //streaming data from appbase
     $scope.getData = function(){
         identifyStreaming = false;
-        try{
           streamingClient.streamSearch({
             type: 'city',
             size: 200,
@@ -141,21 +140,16 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
            }).on('error', function(err) {
              console.log("caught a stream error", err);
            });
-           
-        }catch(err){
-            console.log(err);
-        }
         
     };
     
      function processStreams (res){
-       identifyStreaming = true;
        if($scope.searchtext!=null && $scope.searchtext.replace(/\s/g,'').length){
          response = res;
-         console.log($scope.searchtext);
+         //console.log($scope.searchtext);
          console.log("res"+JSON.stringify(res.hits));
             
-         if(response.hits){
+         if(response.hits && !identifyStreaming){
            
             for(var i=0;i<response.hits.hits.length;i++){
               
@@ -174,6 +168,17 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
                 }
               }
             }
+          }else{
+            if(response._source){
+              categorylist[response._source.category] = true;
+              var arr = [];                 //creating array to publish details on map
+              arr[0] = response._source.shout;
+              arr[1] = response._source.latitude;
+              arr[2] = response._source.longitude;
+              arr[3] = 1;
+              arr[4] = response._source.category;
+              checkin.push(arr);
+            }
           }
           //GeoCoding to search the city
           geocoder.geocode( { "address": $scope.searchtext }, function(results, status) {
@@ -187,11 +192,13 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
             }
           });
           
-          typesOfcat = categorylist;
+
           $scope.beaches = checkin;
-          console.log('beach'+checkin);
+          //console.log('beach'+checkin);
          // $scope.subjects = Object.keys(categorylist);
+          identifyStreaming = true;
           $scope.subjects = createJson(categorylist,Object.keys(categorylist));
+          console.log($scope.subjects);
           $scope.$digest(); 
           $scope.$apply();
        }
