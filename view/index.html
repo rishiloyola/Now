@@ -18,8 +18,8 @@
            <div class="col-sm-3">
              <div class="row" style="height:200px;"></div>
               <input type="text" class="form-control input-lg" placeholder="Enter City Name" ng-model="searchtext" ng-keydown="searchquerry()"/>
-              <table ng-model="suggestions">
-                <tr ng-repeat="x in suggestions" ng-click="changesearchtext(x.text)">
+              <table ng-model="suggestions" style="width:100%;">
+                <tr ng-repeat="x in suggestions" ng-click="changesearchtext(x.text)" style="width:100%;">
                   <td id="suggestdata" ng-show="row">{{ x.text }}</td>
                 </tr>
               </table>
