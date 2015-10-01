@@ -1,6 +1,54 @@
 body {
   background: url(wood-background-1.jpg);
 }
+
+div[ng-controller='MarkerRemoveCtrl'] {
+  position: relative;
+}
+
+div[ng-controller='MarkerRemoveCtrl'] #panel {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  margin-left: -180px;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+}
+
+map{
+  width: 500px;
+  height: 605px;
+  -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
+  -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
+  box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
+}
+
+button {
+  -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+  -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+  box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+}
+
+label {
+  padding-left: 30px;
+  font-family: sans-serif;
+  font-size: 22px;
+  width: 100%;
+  background: rgba(232, 232, 232, 0.3);
+  border-radius: 6px;
+  border: solid 3px #ccc;
+  height: 45px;
+  text-align: left;
+}
+
+.form-control {
+  -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+  -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+  box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+}
+
 #suggestdata {
   display: block;
   margin: 0;
@@ -13,26 +61,11 @@ body {
   width: 100%;
   height: 40px;
 }
-div[ng-controller='MarkerRemoveCtrl'] {
-  position: relative;
-}
-div[ng-controller='MarkerRemoveCtrl'] #panel {
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  margin-left: -180px;
-  z-index: 5;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
-}
-map{
-  width: 520px;
-  height: 600px;
-}
+
 #suggestdata:hover{
   background-color: rgba(216,216,216,0.9);
 }
+
 #custom-search-input{
     padding: 3px;
     border: solid 1px #E4E4E4;
@@ -63,4 +96,28 @@ map{
 
 #custom-search-input .glyphicon-search{
     font-size: 23px;
+}
+
+#scroll {
+    height: 210px;
+    overflow: auto;
+    width: 100%;
+    border-radius: 6px;
+}
+
+#catlist {
+  font-family: sans-serif;
+  font-size: 22px;
+  height: 30px;
+  width: 100%;
+  background: rgba(232, 232, 232, 0.3);
+}
+
+#catlist:hover{
+  background-color: rgba(216,216,216,0.9);
+}
+
+#scrollbox {
+  width: 100%;
+  border-radius: 6px;
 }

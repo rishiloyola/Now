@@ -8,7 +8,7 @@ myApp.service('client', function (esFactory) {
 });
 
 
-myApp.controller('controller', function ($scope, client, esFactory, $interval) {
+myApp.controller('controller', function ($scope, client, esFactory, $interval,$window) {
   
     var streamingClient = new Appbase({
       url: 'https://scalr.api.appbase.io',
@@ -38,6 +38,11 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
         });
     };
     
+    $scope.opencheckin = function(event,details){
+      $window.open('https://'+details,'_blank');
+      console.log(details);
+    }
+    
     
     $scope.changesearchtext = function(text){
         $scope.searchtext = text;
@@ -45,11 +50,11 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
         $scope.$apply();
     }
     
-    $scope.showwindow = function (e,data,visible){
-      
+    $scope.showwindow = function(e,data,visible){
+    
       if(visible){
-         infowindow.setContent('<h3>' + data[0] + '</h3>');
-         var center = new google.maps.LatLng(data[1],data[2]);
+         infowindow.setContent('<table><tr><td>' + '<img src="'+ data[6] + '">' + '</td>' + '<td>' + '<b>'+ data[8] + ' says ' +'</b>' + data[0] + '<br><b>Place : </b>' + data[7] + '</td></tr>'+'</table>');
+         var center = new google.maps.LatLng(data[1]+0.02,data[2]);
          infowindow.setPosition(center);
          infowindow.open($scope.objMapa);
       }else{
@@ -94,7 +99,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
     $scope.showcategory = function(data){
       
         var places = [];
-        
+    
         if(categorylist[data]==true) categorylist[data]=false;
         else categorylist[data]=true;
         
@@ -108,6 +113,10 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
                 arr[2] = checkin[i][2];
                 arr[3] = 1;
                 arr[4] = checkin[i][4];
+                arr[5] = checkin[i][5];
+                arr[6] = checkin[i][6];
+                arr[7] = checkin[i][7]
+                arr[8] = checkin[i][8]
                 places.push(arr);
             }
             
@@ -136,7 +145,6 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
              $scope.$apply();
              processStreams(res);  //to fetch the data and to mark it on map
              $scope.selectedvalue = true;
-             console.log('hello');
            }).on('error', function(err) {
              console.log("caught a stream error", err);
            });
@@ -146,8 +154,9 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
      function processStreams (res){
        if($scope.searchtext!=null && $scope.searchtext.replace(/\s/g,'').length){
          response = res;
-         //console.log($scope.searchtext);
-         console.log("res"+JSON.stringify(res.hits));
+         var parsedResponse = JSON.parse(response.hits.hits[0]._source.response);
+         console.log(parsedResponse.response.checkin.user.photo.prefix);
+         //console.log("res"+JSON.stringify(res.hits));
             
          if(response.hits && !identifyStreaming){
            
@@ -157,13 +166,19 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
                 if( response.hits.hits[i]._source){
                   if(response.hits.hits[i]._source.category){
                     categorylist[response.hits.hits[i]._source.category] = true;
+                    var parsedResponse = JSON.parse(response.hits.hits[i]._source.response);
                     var arr = [];                 //creating array to publish details on map
                     arr[0] = response.hits.hits[i]._source.shout;
                     arr[1] = response.hits.hits[i]._source.latitude;
                     arr[2] = response.hits.hits[i]._source.longitude;
                     arr[3] = 1;
                     arr[4] = response.hits.hits[i]._source.category;
+                    arr[5] = response.hits.hits[i]._source.url;
+                    arr[6] = parsedResponse.response.checkin.user.photo.prefix+"50x50"+parsedResponse.response.checkin.user.photo.suffix;
+                    arr[7] = parsedResponse.response.checkin.venue.name;
+                    arr[8] = parsedResponse.response.checkin.user.firstName;
                     checkin.push(arr);
+                    console.log(arr[6]);
                   }
                 }
               }
@@ -171,12 +186,17 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
           }else{
             if(response._source){
               categorylist[response._source.category] = true;
+              var parsedResponse = JSON.parse(response._source.response);
               var arr = [];                 //creating array to publish details on map
               arr[0] = response._source.shout;
               arr[1] = response._source.latitude;
               arr[2] = response._source.longitude;
               arr[3] = 1;
               arr[4] = response._source.category;
+              arr[5] = response._source.url;
+              arr[6] = parsedResponse.response.checkin.user.photo.prefix+"50x50"+parsedResponse.response.checkin.user.photo.suffix;
+              arr[7] = parsedResponse.response.checkin.venue.name;
+              arr[8] = parsedResponse.response.checkin.user.firstName;
               checkin.push(arr);
             }
           }
@@ -187,15 +207,13 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval) {
                lat  = location.lat(),
                lng  = location.lng();
                $scope.center = [lat,lng];
-               $scope.zoomlevel = 8;
+               $scope.zoomlevel = 11;
                $scope.$apply();
             }
           });
           
 
           $scope.beaches = checkin;
-          //console.log('beach'+checkin);
-         // $scope.subjects = Object.keys(categorylist);
           identifyStreaming = true;
           $scope.subjects = createJson(categorylist,Object.keys(categorylist));
           console.log($scope.subjects);

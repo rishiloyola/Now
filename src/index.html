@@ -14,9 +14,11 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
 <body  ng-app="myApp" ng-controller="controller" ng-init="init()">
-        <div class="container-fluid">
+        <div class="container">
+          <a href="https://github.com/rishiloyola/CheckedIn" target="_blank"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
            <div class="col-sm-3">
-             <div class="row" style="height:200px;"></div>
+             <div class="emptyrow" style="height:200px;padding-left:10px">
+             </div>
               <input type="text" class="form-control input-lg" placeholder="Enter City Name" ng-model="searchtext" ng-keydown="searchquerry()"/>
               <table ng-model="suggestions" style="width:100%;">
                 <tr ng-repeat="x in suggestions" ng-click="changesearchtext(x.text)" style="width:100%;">
@@ -25,22 +27,27 @@
               </table>
            </div>
             
-            <div class="col-sm-2">
+            <div class="col-sm-2" style="width:10%">
               <div class="row" style="height:200px;"></div>
               <button class="btn btn-lg btn-success" ng-click="getData()"><span class="glyphicon glyphicon-map-marker"></span> Plot It !</button>
             </div>
             
-            <div class="col-sm-2">
-              <div class="row" style="height:200px;"></div>
-              <div ng-repeat="sub in subjects">
-                <input type="checkbox" ng-model="sub.value" ng-change="showcategory(sub.name)">
-                {{sub.name}}
+            <div class="col-sm-3">
+              <div class="emptyrow" style="height:200px;"></div>
+              <div class="container-fluid" id="scrollbox">
+                <label>Categories</label>
+                <div id="scroll">
+                  <div ng-repeat="sub in subjects" id="catlist" ng-click="sub.value = (sub.value==true ? false : true);showcategory(sub.name);">
+                    <input type="checkbox" ng-model="sub.value" ng-change="showcategory(sub.name)">
+                    {{sub.name}}
+                  </div>
+                </div>
               </div>
             </div>
             
             <div ng-model="center" class="col-sm-4">  
              <map center="{{center[0]}},{{center[1]}}" zoom="{{zoomlevel}}" ng-model="zoomlevel" styles="[{featureType:'administrative',elementType:'all',stylers:[{visibility:'off'}]},{featureType:'landscape',elementType:'all',stylers:[{visibility:'simplified'},{hue:'#0066ff'},{saturation:'74'},{lightness:'100'}]},{featureType:'poi',elementType:'all',stylers:[{visibility:'simplified'}]},{featureType:'road',elementType:'all',stylers:[{visibility:'simplified'}]},{featureType:'road.highway',elementType:'all',stylers:[{visibility:'off'},{weight:0.6},{saturation:-85},{lightness:61}]},{featureType:'road.highway',elementType:'geometry',stylers:[{visibility:'on'}]},{featureType:'road.arterial',elementType:'all',stylers:[{visibility:'off'}]},{featureType:'road.local',elementType:'all',stylers:[{visibility:'on'}]},{featureType:'transit',elementType:'all',stylers:[{visibility:'simplified'}]},{featureType:'water',elementType:'all',stylers:[{visibility:'simplified'},{color:'#5f94ff'},{lightness:26},{gamma:5.86}]}]">
-              <marker ng-repeat="beach in beaches" id="mark" title="{{beach[0]}}" position="{{beach[1]}}, {{beach[2]}}" z-index="{{beach[3]}}" on-mouseover="showwindow(event,beach,true)" on-mouseout="showwindow(event,beach,false)">
+              <marker ng-repeat="beach in beaches" id="mark" title="{{beach[0]}}" position="{{beach[1]}}, {{beach[2]}}" z-index="{{beach[3]}}" on-click="opencheckin(event,beach[5])" on-mouseover="showwindow(event,beach,true)" on-mouseout="showwindow(event,beach,false)">
               </marker>
              </map>
             </div>
