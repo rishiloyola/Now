@@ -4,7 +4,7 @@ var myApp = angular.module('myApp', ['elasticsearch','ngMap']);
 myApp.service('client', function (esFactory) {
     return esFactory({
         host: 'https://VUFFYiAho:dc58e7a2-1638-46f7-bf8b-2e657b22b410@scalr.api.appbase.io',
-   });
+    });
 });
 
 
@@ -42,7 +42,6 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
       $window.open('https://'+details,'_blank');
       console.log(details);
     }
-    
     
     $scope.changesearchtext = function(text){
         $scope.searchtext = text;
@@ -139,12 +138,15 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
                 }
              }
            }).on('data', function(res) {
+             
              if(!identifyStreaming) {checkin = []; categorylist = [];}
              else console.log('streaming is now on !');
+            
              $scope.row = false;    //to hide suggestions
              $scope.$apply();
              processStreams(res);  //to fetch the data and to mark it on map
              $scope.selectedvalue = true;
+             
            }).on('error', function(err) {
              console.log("caught a stream error", err);
            });
@@ -154,8 +156,6 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
      function processStreams (res){
        if($scope.searchtext!=null && $scope.searchtext.replace(/\s/g,'').length){
          response = res;
-         var parsedResponse = JSON.parse(response.hits.hits[0]._source.response);
-         console.log(parsedResponse.response.checkin.user.photo.prefix);
          //console.log("res"+JSON.stringify(res.hits));
             
          if(response.hits && !identifyStreaming){
@@ -165,8 +165,8 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
               if(response.hits.hits[i]){
                 if( response.hits.hits[i]._source){
                   if(response.hits.hits[i]._source.category){
+                    
                     categorylist[response.hits.hits[i]._source.category] = true;
-                    var parsedResponse = JSON.parse(response.hits.hits[i]._source.response);
                     var arr = [];                 //creating array to publish details on map
                     arr[0] = response.hits.hits[i]._source.shout;
                     arr[1] = response.hits.hits[i]._source.latitude;
@@ -174,19 +174,19 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
                     arr[3] = 1;
                     arr[4] = response.hits.hits[i]._source.category;
                     arr[5] = response.hits.hits[i]._source.url;
-                    arr[6] = parsedResponse.response.checkin.user.photo.prefix+"50x50"+parsedResponse.response.checkin.user.photo.suffix;
-                    arr[7] = parsedResponse.response.checkin.venue.name;
-                    arr[8] = parsedResponse.response.checkin.user.firstName;
+                    arr[6] = response.hits.hits[i]._source.photourl;
+                    arr[7] = response.hits.hits[i]._source.venue;
+                    arr[8] = response.hits.hits[i]._source.username;
                     checkin.push(arr);
-                    console.log(arr[6]);
+                 
                   }
                 }
               }
             }
           }else{
             if(response._source){
+              
               categorylist[response._source.category] = true;
-              var parsedResponse = JSON.parse(response._source.response);
               var arr = [];                 //creating array to publish details on map
               arr[0] = response._source.shout;
               arr[1] = response._source.latitude;
@@ -194,21 +194,24 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
               arr[3] = 1;
               arr[4] = response._source.category;
               arr[5] = response._source.url;
-              arr[6] = parsedResponse.response.checkin.user.photo.prefix+"50x50"+parsedResponse.response.checkin.user.photo.suffix;
-              arr[7] = parsedResponse.response.checkin.venue.name;
-              arr[8] = parsedResponse.response.checkin.user.firstName;
+              arr[6] = response._source.photourl;
+              arr[7] = response._source.venue;
+              arr[8] = response._source.username;
               checkin.push(arr);
+              
             }
           }
           //GeoCoding to search the city
           geocoder.geocode( { "address": $scope.searchtext }, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
+               
                var location = results[0].geometry.location,
                lat  = location.lat(),
                lng  = location.lng();
                $scope.center = [lat,lng];
                $scope.zoomlevel = 11;
                $scope.$apply();
+               
             }
           });
           
@@ -219,6 +222,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
           console.log($scope.subjects);
           $scope.$digest(); 
           $scope.$apply();
+          
        }
     }
     
