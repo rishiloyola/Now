@@ -3,7 +3,7 @@ var myApp = angular.module('myApp', ['elasticsearch','ngMap']);
 
 myApp.service('client', function (esFactory) {
     return esFactory({
-        host: 'https://VUFFYiAho:dc58e7a2-1638-46f7-bf8b-2e657b22b410@scalr.api.appbase.io',
+        host: 'https://YSe48YMha:a1c8ad0b-4e25-4647-b7f6-e39e1ded8d03@scalr.api.appbase.io',
     });
 });
 
@@ -13,8 +13,8 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
     var streamingClient = new Appbase({
       url: 'https://scalr.api.appbase.io',
       appname: 'Check In',
-      username: 'VUFFYiAho',
-      password: 'dc58e7a2-1638-46f7-bf8b-2e657b22b410'
+      username: 'YSe48YMha',
+      password: 'a1c8ad0b-4e25-4647-b7f6-e39e1ded8d03'
     });
     
     
