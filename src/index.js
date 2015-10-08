@@ -174,7 +174,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
         geocoder.geocode( { "address": response._source.state }, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
                var location = results[0].geometry.location;
-               statelist[response._source.state] = [location.lat(),location.lng(),response._source.country,1,true,'blue-dot.png'];
+               statelist[response._source.state] = [location.lat(),location.lng(),response._source.country,1,true,'small_blue_dot.png'];
             }
         });
         geocoder.geocode( { "address": response._source.country }, function(results, status) {
