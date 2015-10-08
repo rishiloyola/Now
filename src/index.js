@@ -43,7 +43,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
     
     $scope.opencheckin = function(event,details){
        if(!details[4]){
-         $window.open('https://'+details[5],'_blank');
+         $window.open('https://'+details[7],'_blank');
          console.log(details);
         }
       };
@@ -59,7 +59,7 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
       if(!data[4]){
         if(visible){
            infowindow.setContent('<table><tr><td>' + '<img src="'+ data[8] + '">' + '</td>' + '<td>' + '<b>'+ data[10] + ' says ' +'</b>' + data[2] + '<br><b>Place : </b>' + data[9] + '</td></tr>'+'</table>');
-           var windowlocation = new google.maps.LatLng(data[0]+0.01,data[1]);
+           var windowlocation = new google.maps.LatLng(data[0]+0.05,data[1]);
            infowindow.setPosition(windowlocation);
            infowindow.open($scope.objMapa);
         }else{
