@@ -18,7 +18,7 @@ div[ng-controller='MarkerRemoveCtrl'] #panel {
 }
 
 map{
-  width: 500px;
+  width: 120%;
   height: 605px;
   -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
   -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
@@ -99,10 +99,10 @@ label {
 }
 
 #scroll {
-    height: 210px;
+    height: 150px;
     overflow: auto;
     width: 100%;
-    border-radius: 6px;
+    border-radius: 0px;
 }
 
 #catlist {
@@ -119,5 +119,9 @@ label {
 
 #scrollbox {
   width: 100%;
-  border-radius: 6px;
+  border-radius: 0px;
+}
+
+#searchscroll{
+  overflow: auto;
 }

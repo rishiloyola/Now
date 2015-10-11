@@ -19,15 +19,18 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
     
     
     var response,                   //global variable to store response from appbase
+        citysearched,
         geocoder = new google.maps.Geocoder(),
         infowindow = new google.maps.InfoWindow(),
         identifyStreaming,          //parameter to identify streaming
         checkin = [],               //global variable to store checkins of one city
-        categorylist = [];           //global variable to store categories of one city
+        categorylist = [],           //global variable to store categories of one city
+        streamedCheckin = [],
+        renderarray = [];
 
-    $scope.selectedvalue = true;
     $scope.detailbox=false;
     $scope.zoomlevel = 2;
+    
     
     //initialize the map
     $scope.init = function(){
@@ -38,10 +41,11 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
         });
     };
     
+    
     $scope.opencheckin = function(event,details){
       $window.open('https://'+details,'_blank');
-      console.log(details);
     }
+    
     
     $scope.changesearchtext = function(text){
         $scope.searchtext = text;
@@ -49,19 +53,23 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
         $scope.$apply();
     }
     
-    $scope.showwindow = function(e,data,visible){
     
+    $scope.showwindow = function(e,data,visible){
       if(visible){
          infowindow.setContent('<table><tr><td>' + '<img src="'+ data[6] + '">' + '</td>' + '<td>' + '<b>'+ data[8] + ' says ' +'</b>' + data[0] + '<br><b>Place : </b>' + data[7] + '</td></tr>'+'</table>');
-         var center = new google.maps.LatLng(data[1]+0.02,data[2]);
+         var center;
+         if($scope.objMapa.getZoom()==0) centre = new google.maps.LatLng(data[1],data[2]);
+         else if($scope.objMapa.getZoom()<=3 && $scope.objMapa.getZoom()>0) center = new google.maps.LatLng(data[1]+11/$scope.objMapa.getZoom(),data[2]-5/$scope.objMapa.getZoom());
+         else if($scope.objMapa.getZoom()>3 && $scope.objMapa.getZoom()<=8) center = new google.maps.LatLng(data[1]+4/$scope.objMapa.getZoom(),data[2]-1/$scope.objMapa.getZoom());
+         else center = new google.maps.LatLng(data[1]+0.2/$scope.objMapa.getZoom(),data[2]-0.08/$scope.objMapa.getZoom());
          infowindow.setPosition(center);
          infowindow.open($scope.objMapa);
       }else{
          infowindow.close();
          infowindow = new google.maps.InfoWindow();
       }
-      
     };
+    
     
     $scope.searchquerry = function(){
         try{
@@ -95,14 +103,14 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
         
     };
     
-    $scope.showcategory = function(data){
-      
-        var places = [];
     
+    $scope.showcategory = function(data){
+        
+        var places = [];
+        
         if(categorylist[data]==true) categorylist[data]=false;
         else categorylist[data]=true;
         
-        console.log(data);
         for(var i=0;i<checkin.length;i++){
           
             if(categorylist[checkin[i][4]] == true){
@@ -114,53 +122,55 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
                 arr[4] = checkin[i][4];
                 arr[5] = checkin[i][5];
                 arr[6] = checkin[i][6];
-                arr[7] = checkin[i][7]
-                arr[8] = checkin[i][8]
+                arr[7] = checkin[i][7];
+                arr[8] = checkin[i][8];
+                arr[9] = checkin[i][9];
                 places.push(arr);
             }
             
         }
         
         $scope.beaches = places;
-    }
+    };
+    
     
     //streaming data from appbase
     $scope.getData = function(){
-        identifyStreaming = false;
-          streamingClient.streamSearch({
+        
+          client.search({
+            index: 'Check In',
             type: 'city',
-            size: 200,
             body: {
                query : {
-                  term: {
+                  match: {
                       city : $scope.searchtext
                   }
                 }
              }
-           }).on('data', function(res) {
+           }).then(function(res) {
              
-             if(!identifyStreaming) {checkin = []; categorylist = [];}
-             else console.log('streaming is now on !');
-            
-             $scope.row = false;    //to hide suggestions
-             $scope.$apply();
-             processStreams(res);  //to fetch the data and to mark it on map
-             $scope.selectedvalue = true;
-             
-           }).on('error', function(err) {
+              checkin = []; 
+              categorylist = [];
+              citysearched = $scope.searchtext;
+              $scope.row = false;    //to hide suggestions
+              $scope.$apply();
+              processStreams(res);  //to fetch the data and to mark it on map
+           }, function(err){
              console.log("caught a stream error", err);
            });
         
     };
     
+        
      function processStreams (res){
+       
        if($scope.searchtext!=null && $scope.searchtext.replace(/\s/g,'').length){
          response = res;
          //console.log("res"+JSON.stringify(res.hits));
             
-         if(response.hits && !identifyStreaming){
+         if(response.hits){
            
-            for(var i=0;i<response.hits.hits.length;i++){
+            for(var i=0;i<response.hits.hits.length;i++){ 
               
               if(response.hits.hits[i]){
                 if( response.hits.hits[i]._source){
@@ -177,31 +187,16 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
                     arr[6] = response.hits.hits[i]._source.photourl;
                     arr[7] = response.hits.hits[i]._source.venue;
                     arr[8] = response.hits.hits[i]._source.username;
+                    arr[9] = 'red_marker.png';
                     checkin.push(arr);
-                 
                   }
                 }
               }
             }
-          }else{
-            if(response._source){
-              
-              categorylist[response._source.category] = true;
-              var arr = [];                 //creating array to publish details on map
-              arr[0] = response._source.shout;
-              arr[1] = response._source.latitude;
-              arr[2] = response._source.longitude;
-              arr[3] = 1;
-              arr[4] = response._source.category;
-              arr[5] = response._source.url;
-              arr[6] = response._source.photourl;
-              arr[7] = response._source.venue;
-              arr[8] = response._source.username;
-              checkin.push(arr);
-              
-            }
           }
+          
           //GeoCoding to search the city
+    
           geocoder.geocode( { "address": $scope.searchtext }, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
                
@@ -209,22 +204,66 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
                lat  = location.lat(),
                lng  = location.lng();
                $scope.center = [lat,lng];
-               $scope.zoomlevel = 11;
+               $scope.objMapa.setZoom(11);
                $scope.$apply();
                
             }
           });
-          
-
-          $scope.beaches = checkin;
-          identifyStreaming = true;
+          renderarray = [];
+          renderarray.push.apply(renderarray,checkin);
+          if(streamedCheckin!=null) renderarray.push.apply(renderarray,streamedCheckin);
+          $scope.beaches = renderarray;
           $scope.subjects = createJson(categorylist,Object.keys(categorylist));
-          console.log($scope.subjects);
           $scope.$digest(); 
           $scope.$apply();
           
        }
     }
+    
+    
+    streamingClient.streamSearch({
+        type: 'city',
+        size: 200,
+        body: {
+            query: {
+              match_all: {}
+            }
+        },
+        streamonly: true
+        }).on('data', function(res) {
+
+             streamNewData(res);  //to fetch the data and to mark it on map
+
+        }).on('error', function(err) {
+           console.log("caught a stream error", err);
+    
+      });
+      
+      
+    function streamNewData(response){
+ 
+       if(response._source){
+          var arr = [];                 //creating array to publish details on map
+          arr[0] = response._source.shout;
+          arr[1] = response._source.latitude;
+          arr[2] = response._source.longitude;
+          arr[3] = 1;
+          arr[4] = response._source.category;
+          arr[5] = response._source.url;
+          arr[6] = response._source.photourl;
+          arr[7] = response._source.venue;
+          arr[8] = response._source.username;
+          arr[9] = 'blue_marker.png';
+          arr[10] = response._source.city;
+          streamedCheckin.push(arr);
+          renderarray = [];
+          if(checkin!=null)renderarray.push.apply(renderarray,checkin);
+          renderarray.push.apply(renderarray,streamedCheckin);
+          $scope.beaches = renderarray;
+          $scope.$apply();
+       }
+    }
+    
     
     //Json data to render dynamic checkbox
     function createJson(key,array){
@@ -239,4 +278,23 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
         return json;
     }
   
+    var removecheckin = function (){
+         if(citysearched==streamedCheckin[0][10]){
+            streamedCheckin[0][9] = 'red_marker.png';
+            checkin.push(streamedCheckin[0]);
+            categorylist[streamedCheckin[0][4]] = true;
+            $scope.subjects = createJson(categorylist,Object.keys(categorylist));
+         }
+         if(streamedCheckin!=null){
+            renderarray = [];
+            streamedCheckin.splice(0,1);
+            if(streamedCheckin!=null)renderarray.push.apply(renderarray,streamedCheckin); 
+            if(checkin!=null)renderarray.push.apply(renderarray,checkin);
+            $scope.beaches = renderarray;
+            $scope.$apply();
+         }
+    }  
+    
+    //$interval(removecheckin,5000);
+
 });
