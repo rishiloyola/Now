@@ -295,6 +295,6 @@ myApp.controller('controller', function ($scope, client, esFactory, $interval,$w
          }
     }  
     
-    $interval(removecheckin,5000);
+    $interval(removecheckin,3000);
 
 });
