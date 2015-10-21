@@ -156,8 +156,8 @@ $scope.showwindow = function(e,data,visible){
        renderarray = [];
        places.push.apply(places,searchedCheckinarray);
        renderarray.push.apply(renderarray,searchedCheckinarray);
-       if(streamedCheckin!=null) renderarray.push.apply(renderarray,streamedCheckin);
        if(draggedCheckin!=null) renderarray.push.apply(renderarray,draggedCheckin);
+       if(streamedCheckin!=null) renderarray.push.apply(renderarray,streamedCheckin);
        $scope.places = renderarray;
        $scope.subjects = createJson(categoryarray,Object.keys(categoryarray));
        $scope.$digest();
@@ -250,8 +250,8 @@ $scope.showwindow = function(e,data,visible){
        if(draggedCheckin.length!=0){
          renderarray = [];
          if(places!=null) renderarray.push.apply(renderarray,places);
-         if(streamedCheckin!=null) renderarray.push.apply(renderarray,streamedCheckin);
          renderarray.push.apply(renderarray,draggedCheckin);
+         if(streamedCheckin!=null) renderarray.push.apply(renderarray,streamedCheckin);
          $scope.places = renderarray;
          $scope.$digest();
          $scope.$apply();
@@ -272,8 +272,8 @@ $scope.showwindow = function(e,data,visible){
      }
      renderarray = [];
      if(places!=null)renderarray.push.apply(renderarray,places);
-     if(streamedCheckin!=null)renderarray.push.apply(renderarray,streamedCheckin);
      if(draggedCheckin!=null) renderarray.push.apply(renderarray,draggedCheckin);
+     if(streamedCheckin!=null)renderarray.push.apply(renderarray,streamedCheckin);
      $scope.places = renderarray;
  };
  //
@@ -298,7 +298,7 @@ $scope.showwindow = function(e,data,visible){
         categoryarray[streamedCheckin[0][4]] = true;
         $scope.subjects = createJson(categoryarray,Object.keys(categoryarray));
       }
-      for(var i=places.length,j=0;i<places.length+streamedCheckin.length;i++,j++){
+      for(var i=places.length+draggedCheckin.length,j=0;i<places.length+streamedCheckin.length+draggedCheckin.length;i++,j++){
         if(nowTime-renderarray[i][11]<5)
          break;
         if(nowTime-renderarray[i][11]>=5){
