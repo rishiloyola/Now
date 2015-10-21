@@ -3,8 +3,8 @@ myApp.service('dataClient',function(client){
     var streamingClient = new Appbase({
        url: 'https://scalr.api.appbase.io',
        appname: 'checkin',
-       username: 'Uxa3m5nPP',
-       password: 'ae4d2bf0-7669-4ba7-8849-3475576501c3'
+       username: '6PdfXag4h',
+       password: 'b614d8fa-03d8-4005-b6f1-f2ff31cd0f91'
      });
 
     this.getSuggestions = function(text){
@@ -70,6 +70,6 @@ myApp.service('dataClient',function(client){
 
 myApp.service('client', function (esFactory) {
     return esFactory({
-        host: 'https://Uxa3m5nPP:ae4d2bf0-7669-4ba7-8849-3475576501c3@scalr.api.appbase.io',
+        host: 'https://6PdfXag4h:b614d8fa-03d8-4005-b6f1-f2ff31cd0f91@scalr.api.appbase.io',
     });
 });
