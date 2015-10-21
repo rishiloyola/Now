@@ -1,11 +1,11 @@
-body {
-  background: url(wood-background-1.jpg);
+body,html {
+  background: url(blue.jpg);
+  background-size: cover;
+  height: 100%;
 }
-
 div[ng-controller='MarkerRemoveCtrl'] {
   position: relative;
 }
-
 div[ng-controller='MarkerRemoveCtrl'] #panel {
   position: absolute;
   top: 40px;
@@ -16,39 +16,108 @@ div[ng-controller='MarkerRemoveCtrl'] #panel {
   padding: 5px;
   border: 1px solid #999;
 }
-
 map{
-  width: 500px;
-  height: 605px;
+  width: 100%;
+  height: 95%;
   -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
   -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
   box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
 }
 
-button {
-  -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
-  -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
-  box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+#bodycontainer{
+  height: 100%;
+}
+#map-container{
+  height: 100%;
+}
+#dynamicpart{
+  height: 100%;
+}
+#freqbar{
+  border-radius: 25px;
+  -moz-border-radius:15px;
+  -webkit-mask-border-radius:15px;
+  text-align: center;
+  -webkit-border-radius:15px;
+  -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
+  -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
+  box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.6);
+  font-size: 25px;
+  color: white;
+  font-weight: bold;
+  width: 60%;
+}
+.scrollbar{
+	margin-left: 30px;
+	float: left;
+	width: 85%;
+  background: rgba(0, 0, 0, 0.1);
+	overflow-y: scroll;
+	margin-bottom: 25px;
+  height: 177px;
+}
+.force-overflow{
+	min-height: 197px;
 }
 
-label {
-  padding-left: 30px;
-  font-family: sans-serif;
-  font-size: 22px;
+#style-1::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
+#categorybox{
+  font-size: 25px;
   width: 100%;
+  height: 50%;
   background: rgba(232, 232, 232, 0.3);
+  -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+  -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
+  box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
   border-radius: 6px;
-  border: solid 3px #ccc;
-  height: 45px;
-  text-align: left;
 }
-
-.form-control {
+#searchbutton{
   -webkit-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
   -moz-box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
   box-shadow: -7px 13px 20px 3px rgba(0,0,0,0.4);
 }
-
+#suggestdata:hover{
+  background-color: rgba(216,216,216,0.9);
+}
+#suggestdata {
+  display: block;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 15px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  background: rgba(240, 240, 240, 0.5);
+  width: 100%;
+  height: 40px;
+}
+#suggestcontainer{
+	width: 100%;
+  background: rgba(0, 0, 0, 0);
+	overflow-y: scroll;
+	margin-bottom: 25px;
+  height: 177px;
+}
+#searchsuggestionbox{
+}
 #suggestdata {
   display: block;
   margin: 0;
@@ -57,67 +126,30 @@ label {
   appearance: none;
   box-shadow: none;
   border-radius: none;
-  background: rgba(240, 240, 240, 0.5);
+  background: rgba(240, 240, 240, 0.3);
   width: 100%;
   height: 40px;
 }
-
-#suggestdata:hover{
-  background-color: rgba(216,216,216,0.9);
-}
-
-#custom-search-input{
-    padding: 3px;
-    border: solid 1px #E4E4E4;
-    border-radius: 6px;
-    background-color: #fff;
-}
-
-#custom-search-input input{
-    border: 0;
-    box-shadow: none;
-}
-
-#custom-search-input button{
-    margin: 2px 0 0 0;
-    background: none;
-    box-shadow: none;
-    border: 0;
-    color: #666666;
-    padding: 0 8px 0 10px;
-    border-left: solid 1px #ccc;
-}
-
-#custom-search-input button:hover{
-    border: 0;
-    box-shadow: none;
-    border-left: solid 1px #ccc;
-}
-
-#custom-search-input .glyphicon-search{
-    font-size: 23px;
-}
-
-#scroll {
-    height: 210px;
-    overflow: auto;
-    width: 100%;
-    border-radius: 6px;
-}
-
 #catlist {
   font-family: sans-serif;
   font-size: 22px;
   height: 30px;
   width: 100%;
   background: rgba(232, 232, 232, 0.3);
+  font-size: 25px;
 }
 
 #catlist:hover{
   background-color: rgba(216,216,216,0.9);
+  margin-right: 20px;
 }
-
-#scrollbox {
-  width: 100%;
-  border-radius: 6px;
+#catlabel{
+  font-family: sans-serif;
+  font-size: 18px;
+  text-align: left;
+  display: inline-block;
+  width: 90%;
+}
+#inlineimage{
+  border-width: 3px;
 }
