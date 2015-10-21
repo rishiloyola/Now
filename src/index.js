@@ -28,7 +28,7 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
   };
 $scope.showwindow = function(e,data,visible){
    if(visible){
-      infowindow.setContent('<table id="infowindow"><tr><td>' + '<img src="'+ data[6] +'>' + '</td>' + '<td>' + '<b>'+ data[8] + ' says ' +'</b>' + data[0] + '<br><b>Place : </b>' + data[7] + '</td></tr>'+'</table>');
+      infowindow.setContent('<table id="infowindow"><tr><td>' + '<img src="'+ data[6] +'">' + '</td>' + '<td>' + '<b>'+ data[8] + ' says ' +'</b>' + data[0] + '<br><b>Place : </b>' + data[7] + '</td></tr>'+'</table>');
       var center;
       switch($scope.mapobj.getZoom()){
         case 2:
@@ -106,13 +106,13 @@ $scope.showwindow = function(e,data,visible){
        $scope.row = false;
   }
   $scope.getData = function(){
-    var searchClient = dataClient.getSearchCheckin($scope.searchtext);
+    var searchClient = dataClient.getSearchCheckin(angular.lowercase($scope.searchtext));
     searchClient.on('data', function(res) {
         console.log(res);
         searchedCheckinarray = [];
         categoryarray = [];
         places = [];
-        citysearched = $scope.searchtext;
+        citysearched = angular.lowercase($scope.searchtext);
         $scope.row = false;    //to hide suggestions
         $scope.$apply();
         searchProcess(res);  //to fetch the data and to mark it on map
