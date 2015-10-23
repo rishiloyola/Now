@@ -8,7 +8,9 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
       streamedCheckin = [],
       searchedCheckinarray = [],
       draggedCheckin = [],
+      infowindowarray= [],
       citysearched,
+      index = 0,
       geocoder = new google.maps.Geocoder(),           //variable for geocoding
       infowindow = new google.maps.InfoWindow();      //variable for map infowindow
 
@@ -23,14 +25,20 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
       $scope.checkinfrequency = "Count";
       $scope.$apply();
   };
-  
+
   $scope.opencheckin = function(event,details){
    $window.open('https://'+details,'_blank');
   };
-  
+
   $scope.showwindow = function(e,data,visible){
+    for(var i=0;i<infowindowarray.length;i++){
+      if(infowindowarray[i][1]==data[1] && infowindowarray[i][2]==data[2]){
+        visible = false;
+      }
+    }
    if(visible){
-      infowindow.setContent('<table id="infowindow"><tr><td>' + '<img src="'+ data[6] +'">' + '</td>' + '<td>' + '<b>'+ data[8] + ' says ' +'</b>' + data[0] + '<br><b>Place : </b>' + data[7] + '</td></tr>'+'</table>');
+      infowindow = new google.maps.InfoWindow();
+      infowindow.setContent('<table id="infowindow"><tr><td>' + '<img src="'+ data[6] +'">' + '</td>' + '<td>' + '<b>'+ data[8] + ' says ' +'</b>' + data[0] + '<br><b>Place : </b>' + data[7] + '<br><tr><a href="https://'+data[5]+'"'+'target="'+'_blank'+'">Visit this CheckIn</a></tr></td></tr>'+'</table>');
       var center;
       switch($scope.mapobj.getZoom()){
         case 2:
@@ -79,12 +87,15 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
       infowindow.setPosition(center);
       infowindow.setZIndex(2);
       infowindow.open($scope.mapobj);
-    }else{
-      infowindow.close();
-      infowindow = new google.maps.InfoWindow();
+      infowindowarray[index] = [];
+      infowindowarray[index][0] = infowindow;
+      infowindowarray[index][1] = data[1];
+      infowindowarray[index][2] = data[2];
+      infowindowarray[index][3] = new Date().getTime()/1000;
+      index++;
     }
  };
- 
+
   $scope.searchquerry = function(){
        try{
           //searchtext variable referred to the text in the search box
@@ -104,12 +115,12 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
           console.log('error in try'+e);
       }
   };
-  
+
   $scope.changesearchtext = function(text){
        $scope.searchtext = text;
        $scope.row = false;
   }
-  
+
   $scope.getData = function(){
     var searchClient = dataClient.getSearchCheckin(angular.lowercase($scope.searchtext));
     searchClient.on('data', function(res) {
@@ -125,7 +136,7 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
         console.log("caught a stream error", err);
       });
   };
-  
+
   function searchProcess (response){
     if($scope.searchtext!=null && $scope.searchtext.replace(/\s/g,'').length){
       $scope.categoriesbox = true;
@@ -144,7 +155,8 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
              arr[7] = response.hits.hits[i]._source.venue;
              arr[8] = response.hits.hits[i]._source.username;
              arr[9] = 'red_marker.png';
-             searchedCheckinarray.push(arr);
+             arr[10] = new Date().getTime()/1000;
+              searchedCheckinarray.push(arr);
            }
          }
        }
@@ -171,7 +183,7 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
        console.log($scope.places);
     }
  }
- 
+
  var realtimeClient = dataClient.getliveData();
  realtimeClient.on('data', function(res) {
      streamProcess(res); //to fetch the data and to mark it on map
@@ -228,7 +240,7 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
        $scope.places = renderarray;
      }
    }
-   
+
   function dragProcess(response){
      if(response.hits){
        for(var i=0;i<response.hits.hits.length;i++){
@@ -262,7 +274,7 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
        $scope.$apply();
      }
    }
-   
+
  $scope.showcategory = function(data){
      places = [];
      if(categoryarray[data]==true) categoryarray[data]=false;
@@ -282,7 +294,7 @@ myApp.controller('viewcontroller',function ($scope, dataClient, esFactory, $inte
      if(streamedCheckin!=null)renderarray.push.apply(renderarray,streamedCheckin);
      $scope.places = renderarray;
  };
- 
+
  function createJson(key,array){
     var json = [];
     for(var i=0;i<array.length;i++){
@@ -327,7 +339,21 @@ var removecheckin = function (){
       $scope.$digest();
       $scope.$apply();
   }
+  function closewindow(){
+    var nowTime = new Date().getTime()/1000;
+    for(var i=0;i<infowindowarray.length;i++){
+      if(nowTime-infowindowarray[i][3]<3)
+         break;
+      if(nowTime-infowindowarray[i][3]>=3){
+         var popup = infowindowarray[i][0]
+         popup.close();
+         index--;
+         infowindowarray.splice(i,1);
+      }
+    }
+  }
 
  $interval(removecheckin,5000);
- 
+ $interval(closewindow,3000);
+
 });
