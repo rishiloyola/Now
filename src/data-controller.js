@@ -9,13 +9,15 @@ myApp.service('dataClient',function(client){
 
     this.getSuggestions = function(text){
 
-    return client.suggest({
+    return streamingClient.search({
           index: 'checkin',
           body: {
-            mysuggester: {
-              text: text,
-              completion: {
-                field: 'city_suggest'
+            suggest: {
+              mysuggester: {
+                text: text,
+                completion: {
+                  field: 'city_suggest'
+                }
               }
             }
           }
