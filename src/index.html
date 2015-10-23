@@ -4,15 +4,15 @@
   <title>Check Ins</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="stylesheet" type="text/css" href="index2.css">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather,visualization,panoramio"></script>
   <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <script src="bower_components/appbase-js/browser/appbase.js"></script>
   <script src="bower_components/elasticsearch/elasticsearch.angular.js"></script>
-  <script src="index.js"></script>
-  <script src="data-controller.js"></script>
+  <script src="index2.js"></script>
+  <script src="controller2.js"></script>
 </head>
 <body ng-app="myApp" ng-controller="viewcontroller"  ng-init="init()">
   <a href="https://github.com/rishiloyola/CheckedIn"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
@@ -31,7 +31,7 @@
     <div class="row" id="dynamicpart">
       <div class="col-sm-8" id="map-container">
         <map on-zoom_changed="draggedmap()" on-dragend="draggedmap()" styles="[{featureType:'administrative',elementType:'all',stylers:[{visibility:'off'}]},{featureType:'landscape',elementType:'all',stylers:[{visibility:'simplified'},{hue:'#0066ff'},{saturation:'74'},{lightness:'100'}]},{featureType:'poi',elementType:'all',stylers:[{visibility:'simplified'}]},{featureType:'road',elementType:'all',stylers:[{visibility:'simplified'}]},{featureType:'road.highway',elementType:'all',stylers:[{visibility:'off'},{weight:0.6},{saturation:-85},{lightness:61}]},{featureType:'road.highway',elementType:'geometry',stylers:[{visibility:'on'}]},{featureType:'road.arterial',elementType:'all',stylers:[{visibility:'off'}]},{featureType:'road.local',elementType:'all',stylers:[{visibility:'on'}]},{featureType:'transit',elementType:'all',stylers:[{visibility:'simplified'}]},{featureType:'water',elementType:'all',stylers:[{visibility:'simplified'},{color:'#5f94ff'},{lightness:26},{gamma:5.86}]}]">
-          <marker ng-repeat="place in places" id="mark" title="{{place[0]}}" icon="{{place[9]}}" position="{{place[1]}}, {{place[2]}}" z-index="{{place[3]}}" on-click="opencheckin(event,place[5])" on-mouseover="showwindow(event,place,true)" on-mouseout="showwindow(event,place,false)"></marker>
+          <marker ng-repeat="place in places" id="mark" title="{{place[0]}}" icon="{{place[9]}}" position="{{place[1]}}, {{place[2]}}" z-index="{{place[3]}}" on-click="opencheckin(event,place[5])" on-mouseover="showwindow(event,place,true)"></marker>
         </map>
       </div>
       <div class="col-sm-4">
