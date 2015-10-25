@@ -9,7 +9,7 @@ myApp.service('dataClient',function(client){
 
     this.getSuggestions = function(text){
 
-    return client.suggest({
+        return client.suggest({
           index: 'checkin',
           body: {
             mysuggester: {
@@ -23,49 +23,48 @@ myApp.service('dataClient',function(client){
     }
 
     this.getSearchCheckin = function(text){
-      return streamingClient.search({
-        index: 'checkin',
-        type: 'city',
-        body: {
-          query : {
-            match: {
-              city : text
+        return streamingClient.search({
+          index: 'checkin',
+          type: 'city',
+          body: {
+            query : {
+              match: {
+                city : text
+              }
             }
           }
-        }
-      });
+       });
     }
 
     this.getliveData = function(){
-      return streamingClient.searchStream({
-        type: 'city',
-        size: 200,
-        body: {
-          query: {
-            match_all: {}
-          }
-        },
-        streamonly: true
+        return streamingClient.searchStream({
+          type: 'city',
+          size: 200,
+          body: {
+            query: {
+              match_all: {}
+            }
+          },
+          streamonly: true
       });
     }
 
     this.getDragData = function(lat,lng){
-      return streamingClient.search({
-        type: 'city',
-        body: {
-          query : {
-            match_all : {}
-          },
-          filter : {
-            geo_distance : {
-              distance : "2000km",
-              location : [lat,lng]
+        return streamingClient.search({
+          type: 'city',
+          body: {
+            query : {
+              match_all : {}
+            },
+            filter : {
+              geo_distance : {
+                distance : "2000km",
+                location : [lat,lng]
+              }
             }
           }
-        }
-      });
+        });
     }
-
 });
 
 myApp.service('client', function (esFactory) {
