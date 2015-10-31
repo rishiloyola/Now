@@ -31,7 +31,11 @@ map{
   height: 100%;
 }
 #dynamicpart{
-  height: 100%;
+  height: 85%;
+}
+#freqlabel {
+  font-weight: normal;
+  font-size: 0.8em;
 }
 #freqbar{
   border-radius: 25px;
@@ -45,7 +49,6 @@ map{
   font-size: 25px;
   color: white;
   font-weight: bold;
-  width: 60%;
 }
 .scrollbar{
 	margin-left: 30px;
